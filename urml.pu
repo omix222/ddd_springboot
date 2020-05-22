@@ -1,0 +1,9 @@
+@startuml
+
+BookController -> BookRepository: findAll
+BookRepository --> BookController: List<Book>
+
+BookController -> BookRepository: save
+BookRepository --> BookController: book
+
+@enduml
