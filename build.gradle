@@ -1,67 +1,27 @@
 plugins {
-	id 'org.springframework.boot' version '2.2.7.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'org.springframework.boot' version '2.4.0-SNAPSHOT'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
-    id 'nu.studer.jooq' version '3.0.2'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '8'
+sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://repo.spring.io/snapshot' }
 }
-jooq {
-    version = '3.11.2'
-    edition = 'OSS'
-    tables(sourceSets.main) {
-        jdbc {
-            driver = 'org.h2.Driver'
-            url = 'jdbc:h2:./testdb;AUTO_SERVER=TRUE'
-            user = 'user'
-            password = ''
-        }
-        generator {
-            name = 'org.jooq.util.DefaultGenerator'
-            database {
-                name = 'org.jooq.util.h2.H2Database'
-                includes = '.*'
-                excludes = ''
-            }
-            target {
-                packageName = 'box.white.seriwb.api.jooq'
-                directory = 'src/main/java'
-            }
-        }
-    }
-}
+
 
 dependencies {
-	//implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.h2database:h2'
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
-    compile group: 'org.jooq', name: 'jooq', version: '3.11.2'
-    compile group: 'org.jooq', name: 'jooq-parent', version: '3.11.2'/*, ext: 'pom'*/
-    compile group: 'org.jooq', name: 'jooq-meta', version: '3.11.2'
-    compile group: 'org.jooq', name: 'jooq-meta-extensions', version: '3.11.2'
-    compile group: 'org.jooq', name: 'jooq-codegen', version: '3.11.2'
-    compile group: 'org.jooq', name: 'jooq-codegen-maven', version: '3.11.2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
-// cleanタスクで生成されたコードが削除されないようにするため、1つ段階を踏む
-task copyJooq(dependsOn: [clean, generateTablesJooqSchemaSource]) {
-    doLast {
-        File targetDir = new File("src/main/java/com/example/ddd/jooq")
-        targetDir.deleteDir()
 
-        File jooqDir = new File("build/generated-src/jooq/tables")
-        GFileUtils.copyDirectory(jooqDir, new File("src/main/java"))
-    }
-}
 test {
 	useJUnitPlatform()
 }
